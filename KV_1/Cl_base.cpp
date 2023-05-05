@@ -32,12 +32,9 @@ Cl_base* Cl_base::get_head_ptr() {
 void Cl_base::print_tree() {
 	if (p_head_object == nullptr)
 		std::cout << s_object_name << '\n';
-	std::cout << s_object_name << "  ";
+	std::cout << s_object_name;
 	for (int i = 0; i < subordinate_objects.size(); i++) {
-		if (i != subordinate_objects.size() - 1)
-			std::cout << subordinate_objects[i]->s_object_name << "  ";
-		else
-			std::cout << subordinate_objects[i]->s_object_name;
+		std::cout <<"  " << subordinate_objects[i]->s_object_name;
 	}
 	if (subordinate_objects.back()->subordinate_objects.size() != 0) {
 		std::cout << std::endl;

@@ -11,17 +11,17 @@ Cl_application::Cl_application(Cl_base* p_head_object, std::string s_object_name
 
 void Cl_application::build_tree_objects() {
 	string head_name, sub_name;
-	//vector<Cl_base*> objects{this};
+	Cl_base* current_head_level = this;
 	while (cin >> head_name >> sub_name)
 		if (head_name == sub_name) break;
-		if (head_name == get_name()) {
-			Cl_base* ob = new Cl_base(this, sub_name);
-			//objects.push_back(ob);
+		else if (head_name == current_head_level->get_name()) {
+			Cl_base* ob = new Cl_base(current_head_level, sub_name);
 		}
-		else {
-			
-			Cl_base* ob = new Cl_base(get_subordinate_ptr(head_name), sub_name);
-			//objects.push_back(ob);
+		else if (current_head_level->get_subordinate_ptr(head_name) != nullptr 
+				 && current_head_level->subordinate_objects.back()->get_name() == head_name){
+			Cl_base* new_head = current_head_level->get_subordinate_ptr(head_name);
+			Cl_base* ob = new Cl_base(new_head, sub_name);
+			current_head_level = new_head;
 		}
 }
 
