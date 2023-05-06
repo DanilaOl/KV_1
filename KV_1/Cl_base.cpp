@@ -49,3 +49,10 @@ Cl_base* Cl_base::get_subordinate_ptr(std::string name) {
 	}
 	return nullptr;
 }
+
+Cl_base::~Cl_base() {
+	for (auto it = subordinate_objects.begin(); it != subordinate_objects.end(); ++it) {
+		delete *it;
+	}
+	subordinate_objects.clear();
+}
