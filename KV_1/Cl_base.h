@@ -13,7 +13,8 @@ public:
 	Cl_base* get_head_ptr();
 	void print_tree();
 	Cl_base* get_subordinate_ptr(std::string name);
-protected:
+	~Cl_base();
+private:
 	std::string s_object_name;
 	Cl_base* p_head_object;
 };
