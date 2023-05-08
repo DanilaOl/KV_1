@@ -34,7 +34,7 @@ void Cl_base::print_tree() {
 		std::cout << s_object_name << '\n';
 	std::cout << s_object_name;
 	for (int i = 0; i < subordinate_objects.size(); i++) {
-		std::cout <<"  " << subordinate_objects[i]->s_object_name;
+		std::cout << "  " << subordinate_objects[i]->s_object_name;
 	}
 	if (subordinate_objects.back()->subordinate_objects.size() != 0) {
 		std::cout << std::endl;
@@ -51,8 +51,8 @@ Cl_base* Cl_base::get_subordinate_ptr(std::string name) {
 }
 
 Cl_base::~Cl_base() {
-	for (auto it = subordinate_objects.begin(); it != subordinate_objects.end(); ++it) {
-		delete *it;
+	for (std::vector<Cl_base*>::iterator it = subordinate_objects.begin(); it != subordinate_objects.end(); ++it) {
+		delete* it;
 	}
 	subordinate_objects.clear();
 }
