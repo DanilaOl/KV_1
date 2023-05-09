@@ -127,15 +127,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Base_cl.cpp" />
-    <ClCompile Include="Cl_app.cpp" />
     <ClCompile Include="Cl_application.cpp" />
     <ClCompile Include="Cl_base.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Base_cl.h" />
-    <ClInclude Include="Cl_app.h" />
     <ClInclude Include="Cl_application.h" />
     <ClInclude Include="Cl_base.h" />
   </ItemGroup>

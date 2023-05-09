@@ -3,14 +3,14 @@
 
 using namespace std;
 
-Cl_application::Cl_application(Cl_base* p_head_object, std::string s_object_name) :Cl_base(p_head_object, s_object_name) {
+Cl_application::Cl_application(Cl_base* p_head_object, std::string s_object_name) :Cl_base(p_head_object, 1, s_object_name) {
 	string temp;
 	cin >> temp;
 	rename(temp);
 }
 
 void Cl_application::build_tree_objects() {
-	string head_name, sub_name;
+	/*string head_name, sub_name;
 	Cl_base* current_head = this, * ob = nullptr;
 	while (cin >> head_name >> sub_name) {
 		if (head_name == sub_name) break;
@@ -22,10 +22,33 @@ void Cl_application::build_tree_objects() {
 			current_head = current_head->get_subordinate_ptr(head_name);
 			ob = new Cl_base(current_head, sub_name);
 		}
+	}*/
+	Cl_base* ob, *sub, *head;
+	string head_name, sub_name;
+	int class_num, state_num;
+	while (cin >> head_name) {
+		if (head_name == "endtree") break;
+		cin >> sub_name >> class_num;
+		if (class_num < 2 || class_num > 6) continue;
+
+		head = find_in_tree(head_name);
+		sub = find_in_tree(sub_name);
+
+		if (sub != nullptr || head == nullptr) continue;
+
+		ob = new Cl_base(head, class_num, sub_name);
+	}
+	while (cin >> head_name >> state_num) {
+		head = find_in_tree(head_name);
+		if (head == nullptr) continue;
+		else {
+			head->set_readiness(state_num);
+		}
 	}
 }
 
 int Cl_application::exec_app() {
-	this->print_tree();
+	this->print_branch();
+	this->print_branch_readiness();
 	return 0;
 }
