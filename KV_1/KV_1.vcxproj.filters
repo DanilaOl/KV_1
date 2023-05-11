@@ -24,12 +24,18 @@
     <ClCompile Include="Cl_application.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="Cl_myclass.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cl_base.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Cl_application.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Cl_myclass.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

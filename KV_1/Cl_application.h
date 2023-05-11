@@ -6,7 +6,7 @@
 
 class Cl_application : public Cl_base {
 public:
-	Cl_application(Cl_base* p_head_object, std::string s_object_name = "Base_object");
+	Cl_application(Cl_base* head);
 	void build_tree_objects();
 	int exec_app();
 };
