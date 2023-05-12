@@ -129,13 +129,21 @@
   <ItemGroup>
     <ClCompile Include="Cl_application.cpp" />
     <ClCompile Include="Cl_base.cpp" />
-    <ClCompile Include="Cl_myclass.cpp" />
+    <ClCompile Include="Cl_myclass2.cpp" />
+    <ClCompile Include="Cl_myclass3.cpp" />
+    <ClCompile Include="Cl_myclass4.cpp" />
+    <ClCompile Include="Cl_myclass5.cpp" />
+    <ClCompile Include="Cl_myclass6.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cl_application.h" />
     <ClInclude Include="Cl_base.h" />
-    <ClInclude Include="Cl_myclass.h" />
+    <ClInclude Include="Cl_myclass2.h" />
+    <ClInclude Include="Cl_myclass3.h" />
+    <ClInclude Include="Cl_myclass4.h" />
+    <ClInclude Include="Cl_myclass5.h" />
+    <ClInclude Include="Cl_myclass6.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
