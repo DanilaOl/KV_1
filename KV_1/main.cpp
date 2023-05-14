@@ -11,5 +11,5 @@
 int main() {
 	Cl_application app(nullptr);
 	app.build_tree_objects();
-	app.exec_app();
+	return app.exec_app();
 }

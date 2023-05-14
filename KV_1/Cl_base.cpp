@@ -1,5 +1,6 @@
 #include "Cl_base.h"
 #include <iostream>
+#include <vector>
 
 Cl_base::Cl_base(Cl_base* head, std::string name) {
 	this->head = head;
@@ -50,24 +51,43 @@ Cl_base* Cl_base::get_subordinate_ptr(std::string name) {
 	return nullptr;
 }
 
-Cl_base* Cl_base::find_in_branch(std::string name) {
-	Cl_base* ob;
-	if (name == this->get_name()) return this;
-	else {
-		for (auto it : subordinate_objects) {
-			ob = it->find_in_branch(name);
-			if (ob != nullptr) return ob;
-		}
-	}
+//Cl_base* Cl_base::find_in_branch(std::string name) {
+//	Cl_base* ob;
+//	if (name == this->get_name()) return this;
+//	else {
+//		for (auto it : subordinate_objects) {
+//			ob = it->find_in_branch(name);
+//			if (ob != nullptr) return ob;
+//		}
+//	}
+//
+//	return nullptr;
+//}
 
-	return nullptr;
+Cl_base* Cl_base::find_in_branch(std::string name) {
+	Cl_base *ob = nullptr, *current;
+	std::vector<Cl_base*> objects;
+	objects.push_back(this);
+	while (objects.size() != 0) {
+		current = objects[0];
+		for (auto it : current->subordinate_objects) {
+			objects.push_back(it);
+		}
+		if (current->get_name() == name) {
+			if (ob == nullptr) 
+				ob = current;
+			else 
+				return nullptr;
+		}
+		objects.erase(objects.begin());
+	}
+	return ob;
 }
 
 Cl_base* Cl_base::find_in_tree(std::string name) {
-	Cl_base *current = this, *parent = this->get_head_ptr();
-	while (parent != nullptr) {
-		current = parent;
-		parent = parent->get_head_ptr();
+	Cl_base* current = this;
+	while (current->get_head_ptr() != nullptr) {
+		current = current->get_head_ptr();
 	}
 	return current->find_in_branch(name);
 }
