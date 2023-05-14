@@ -6,11 +6,11 @@
 
 class Cl_base {
 private:
-	Cl_base *head;
 	std::string name;
+	Cl_base *head;
+	int state = 0;
 	std::vector<Cl_base *> subordinate_objects;
 public:
-	int state = 0;
 	Cl_base(Cl_base* p_head_object, std::string s_object_name = "Base_object");
 	~Cl_base();
 	bool rename(std::string new_name);
