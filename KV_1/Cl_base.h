@@ -23,6 +23,9 @@ public:
 	void print_branch(int indent=0);
 	void print_branch_readiness(int indent=0);
 	void set_readiness(int state);
+	bool rebase(Cl_base *new_head);
+	void delete_sub_object(std::string name);
+	Cl_base* find_path(std::string path);
 };
 
 #endif

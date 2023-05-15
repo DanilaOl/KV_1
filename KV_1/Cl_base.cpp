@@ -139,6 +139,54 @@ void Cl_base::set_readiness(int state) {
 	}
 }
 
+bool Cl_base::rebase(Cl_base *new_head)
+{
+	Cl_base *temp = new_head, *head = this->get_head_ptr();
+	if (head == new_head) return true;
+	if (head == nullptr || new_head == nullptr) return false;
+	if (new_head->get_subordinate_ptr(this->get_name())->get_name() == this->get_name()) return false; //Если имя текущего объекта и одного из детей нового головного совпадают
+
+
+	//Если new_head - один из потомков текущего объекта
+	while (temp != nullptr) {
+		temp = temp->get_head_ptr();
+		if (temp == this) return false;
+	}
+
+	//Удаление текущего объекта из вектора родителя
+	for (auto it = head->subordinate_objects.begin(); it != head->subordinate_objects.end(); it++) {
+		if ((*it)->get_name() == this->get_name())
+			head->subordinate_objects.erase(it);
+	}
+	new_head->subordinate_objects.push_back(this);
+	this->head = new_head;
+	return true;
+}
+
+void Cl_base::delete_sub_object(std::string name)
+{
+	for (auto it = subordinate_objects.begin(); it != subordinate_objects.end(); it++) {
+		if ((*it)->get_name() == name) {
+			subordinate_objects.erase(it);
+			delete *it;
+		}
+	}
+}
+
+Cl_base *Cl_base::find_path(std::string path)
+{
+	Cl_base *root = this;
+	while (root->get_head_ptr() != nullptr) {
+		root = root->get_head_ptr();
+	}
+	if (path == "/") return root;
+	if (path == ".") return this;
+	if (path[0] == '/' && path[1] != '/') {
+
+	}
+	return nullptr;
+}
+
 Cl_base::~Cl_base() {
 	for (int i = 0; i < subordinate_objects.size(); i++) {
 		delete subordinate_objects[i];
