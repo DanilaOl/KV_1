@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 
-Cl_base::Cl_base(Cl_base* head, std::string name) {
+Cl_base::Cl_base(Cl_base *head, std::string name) {
 	this->head = head;
 	this->name = name;
 	if (head != nullptr) {
@@ -26,7 +26,7 @@ std::string Cl_base::get_name() {
 	return name;
 }
 
-Cl_base* Cl_base::get_head_ptr() {
+Cl_base *Cl_base::get_head_ptr() {
 	return head;
 }
 
@@ -43,7 +43,7 @@ void Cl_base::print_tree() {
 	}
 }
 
-Cl_base* Cl_base::get_subordinate_ptr(std::string name) {
+Cl_base *Cl_base::get_subordinate_ptr(std::string name) {
 	for (int i = 0; i < subordinate_objects.size(); i++) {
 		if (subordinate_objects[i]->get_name() == name)
 			return subordinate_objects[i];
@@ -64,9 +64,9 @@ Cl_base* Cl_base::get_subordinate_ptr(std::string name) {
 //	return nullptr;
 //}
 
-Cl_base* Cl_base::find_in_branch(std::string name) {
+Cl_base *Cl_base::find_in_branch(std::string name) {
 	Cl_base *ob = nullptr, *current;
-	std::vector<Cl_base*> objects;
+	std::vector<Cl_base *> objects;
 	objects.push_back(this);
 	while (objects.size() != 0) {
 		current = objects[0];
@@ -74,9 +74,9 @@ Cl_base* Cl_base::find_in_branch(std::string name) {
 			objects.push_back(it);
 		}
 		if (current->get_name() == name) {
-			if (ob == nullptr) 
+			if (ob == nullptr)
 				ob = current;
-			else 
+			else
 				return nullptr;
 		}
 		objects.erase(objects.begin());
@@ -84,8 +84,8 @@ Cl_base* Cl_base::find_in_branch(std::string name) {
 	return ob;
 }
 
-Cl_base* Cl_base::find_in_tree(std::string name) {
-	Cl_base* current = this;
+Cl_base *Cl_base::find_in_tree(std::string name) {
+	Cl_base *current = this;
 	while (current->get_head_ptr() != nullptr) {
 		current = current->get_head_ptr();
 	}
@@ -124,7 +124,7 @@ void Cl_base::set_readiness(int state) {
 			this->state = state;
 			return;
 		}
-		Cl_base* parent = this->get_head_ptr();
+		Cl_base *parent = this->get_head_ptr();
 		while (parent != nullptr) {
 			if (parent->state == 0) return;
 			else parent = parent->get_head_ptr();
@@ -173,16 +173,57 @@ void Cl_base::delete_sub_object(std::string name)
 	}
 }
 
-Cl_base *Cl_base::find_path(std::string path)
-{
-	Cl_base *root = this;
+Cl_base *Cl_base::find_path(std::string path) {
+	Cl_base *root = this, *current = this;
 	while (root->get_head_ptr() != nullptr) {
 		root = root->get_head_ptr();
 	}
 	if (path == "/") return root;
 	if (path == ".") return this;
+	if (path[0] == '/' && path[1] == '/') {
+		path.erase(path.begin(), path.begin() + 1);
+		return root->find_in_branch(path);
+	}
 	if (path[0] == '/' && path[1] != '/') {
-
+		path.erase(path.begin());
+		char sep = '/';
+		std::string temp = "";
+		std::vector<std::string> names;
+		for (auto ch : path) {
+			if (ch != sep)
+				temp.push_back(ch);
+			else {
+				names.push_back(temp);
+				temp = "";
+			}
+		}
+		for (auto name : names) {
+			root = root->get_subordinate_ptr(name);
+			if (root == nullptr) break;
+		}
+		return root;
+	}
+	if (path[0] == '.') {
+		path.erase(path.begin());
+		return this->find_in_branch(path);
+	}
+	if (path[0] != '.' && path[0] != '/' && path[1] != '.' && path[1] != '/') {
+		char sep = '/';
+		std::string temp = "";
+		std::vector<std::string> names;
+		for (auto ch : path) {
+			if (ch != sep)
+				temp.push_back(ch);
+			else {
+				names.push_back(temp);
+				temp = "";
+			}
+		}
+		for (auto name : names) {
+			current = current->get_subordinate_ptr(name);
+			if (current == nullptr) break;
+		}
+		return current;
 	}
 	return nullptr;
 }
