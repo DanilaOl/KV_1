@@ -65,14 +65,98 @@ void Cl_application::build_tree_objects() {
 	while (cin >> head_path) {
 		if (head_path == "endtree") break;
 		if (head_path[0] != '/') continue;
-		head = find_path(head_path);
 
+		head = find_path(head_path);
+		if (head == nullptr) {
+			print_branch();
+			std::cout << "\nThe head object " << head_path << " is not found";
+			exit(1);
+		}
+
+		cin >> sub_name >> num;
+		sub = head->get_subordinate_ptr(sub_name);
+		if (sub != nullptr) {
+			std::cout << head_path << "     Dubbing the names of subordinate objects";
+			continue;
+		}
+		if (num < 2 || num > 6) continue;
+
+		switch (num) {
+		case 2:
+			ob = new Cl_myclass2(head, sub_name);
+			break;
+		case 3:
+			ob = new Cl_myclass3(head, sub_name);
+			break;
+		case 4:
+			ob = new Cl_myclass4(head, sub_name);
+			break;
+		case 5:
+			ob = new Cl_myclass5(head, sub_name);
+			break;
+		case 6:
+			ob = new Cl_myclass6(head, sub_name);
+			break;
+		default:
+			break;
+		}
 	}
 }
 
 int Cl_application::exec_app() {
+	std::cout << "Object tree";
 	this->print_branch();
-	cout << endl;
-	this->print_branch_readiness();
+	std::cout << std::endl;
+	std::string command, path;
+	Cl_base *current = this, *temp = nullptr;
+	while (cin >> command) {
+		if (command == "END") break;
+
+		cin >> path;
+		temp = current->find_path(path);
+		if (command == "SET") {
+			if (temp == nullptr) {
+				std::cout << "The object was not found at the specified coordinate: " << path;
+			}
+			else {
+				current = temp;
+				std::cout << "Object is set: " << current->get_name();
+			}
+			continue;
+		}
+		if (command == "FIND") {
+			if (temp == nullptr) {
+				std::cout << path << "     Object is not found";
+			}
+			else {
+				std::cout << path << "     Object name: " << temp->get_name();
+			}
+			continue;
+		}
+		if (command == "MOVE") {
+			if (temp == nullptr) 
+				std::cout << path << "     Head object is not found";
+			else if (temp->get_subordinate_ptr(current->get_name()) != nullptr) 
+				std::cout << path << "     Dubbing the names of subordinate objects";
+			else if (!current->rebase(temp)) 
+				std::cout << path << "     Redefining the head object failed";
+			else 
+				std::cout << "New head object: " << temp->get_name();
+			continue;
+		}
+		if (command == "DELETE") {
+			if (current->get_subordinate_ptr(path) == nullptr) continue;
+			current->delete_sub_object(path);
+			std::string abs_path = '/' + path;
+			temp = current;
+			while (temp != nullptr) {
+				abs_path = '/' + temp->get_name() + abs_path;
+				temp = temp->get_head_ptr();
+			}
+			std::cout << "The object " << abs_path << " has been deleted";
+		}
+	}
+	std::cout << "Current object hierarchy tree";
+	this->print_branch();
 	return 0;
 }

@@ -30,19 +30,6 @@ Cl_base *Cl_base::get_head_ptr() {
 	return head;
 }
 
-void Cl_base::print_tree() {
-	if (head == nullptr)
-		std::cout << name << '\n';
-	std::cout << name;
-	for (int i = 0; i < subordinate_objects.size(); i++) {
-		std::cout << "  " << subordinate_objects[i]->get_name();
-	}
-	if (subordinate_objects.size() != 0 && subordinate_objects.back()->subordinate_objects.size() != 0) {
-		std::cout << std::endl;
-		subordinate_objects.back()->print_tree();
-	}
-}
-
 Cl_base *Cl_base::get_subordinate_ptr(std::string name) {
 	for (int i = 0; i < subordinate_objects.size(); i++) {
 		if (subordinate_objects[i]->get_name() == name)
@@ -50,19 +37,6 @@ Cl_base *Cl_base::get_subordinate_ptr(std::string name) {
 	}
 	return nullptr;
 }
-
-//Cl_base* Cl_base::find_in_branch(std::string name) {
-//	Cl_base* ob;
-//	if (name == this->get_name()) return this;
-//	else {
-//		for (auto it : subordinate_objects) {
-//			ob = it->find_in_branch(name);
-//			if (ob != nullptr) return ob;
-//		}
-//	}
-//
-//	return nullptr;
-//}
 
 Cl_base *Cl_base::find_in_branch(std::string name) {
 	Cl_base *ob = nullptr, *current;
@@ -97,8 +71,10 @@ void Cl_base::print_branch(int indent) {
 	for (int i = 0; i < indent; i++) {
 		prefix += "    ";
 	}
-	if (this->get_head_ptr() == nullptr) std::cout << "Object tree";
-	std::cout << std::endl << prefix << this->get_name();
+	if (this->get_head_ptr() == nullptr) 
+		std::cout << prefix << this->get_name();
+	else 
+		std::cout << std::endl << prefix << this->get_name();
 	for (auto it : subordinate_objects) {
 		it->print_branch(indent + 1);
 	}
@@ -144,8 +120,10 @@ bool Cl_base::rebase(Cl_base *new_head)
 	Cl_base *temp = new_head, *head = this->get_head_ptr();
 	if (head == new_head) return true;
 	if (head == nullptr || new_head == nullptr) return false;
-	if (new_head->get_subordinate_ptr(this->get_name())->get_name() == this->get_name()) return false; //Если имя текущего объекта и одного из детей нового головного совпадают
-
+	//ERROR: if sub not found, get_name() is called from nullptr
+	//if (new_head->get_subordinate_ptr(this->get_name()) == nullptr || new_head->get_subordinate_ptr(this->get_name())->get_name() == this->get_name()) //Если имя текущего объекта и одного из детей нового головного совпадают
+	if (new_head->get_subordinate_ptr(this->get_name()) != nullptr)
+		return false; 
 
 	//Если new_head - один из потомков текущего объекта
 	while (temp != nullptr) {
@@ -155,8 +133,10 @@ bool Cl_base::rebase(Cl_base *new_head)
 
 	//Удаление текущего объекта из вектора родителя
 	for (auto it = head->subordinate_objects.begin(); it != head->subordinate_objects.end(); it++) {
-		if ((*it)->get_name() == this->get_name())
+		if ((*it)->get_name() == this->get_name()) {
 			head->subordinate_objects.erase(it);
+			break;
+		}
 	}
 	new_head->subordinate_objects.push_back(this);
 	this->head = new_head;
@@ -167,8 +147,9 @@ void Cl_base::delete_sub_object(std::string name)
 {
 	for (auto it = subordinate_objects.begin(); it != subordinate_objects.end(); it++) {
 		if ((*it)->get_name() == name) {
-			subordinate_objects.erase(it);
 			delete *it;
+			subordinate_objects.erase(it);
+			break;
 		}
 	}
 }
@@ -181,22 +162,22 @@ Cl_base *Cl_base::find_path(std::string path) {
 	if (path == "/") return root;
 	if (path == ".") return this;
 	if (path[0] == '/' && path[1] == '/') {
-		path.erase(path.begin(), path.begin() + 1);
+		path.erase(0, 2);
 		return root->find_in_branch(path);
 	}
 	if (path[0] == '/' && path[1] != '/') {
 		path.erase(path.begin());
-		char sep = '/';
 		std::string temp = "";
 		std::vector<std::string> names;
 		for (auto ch : path) {
-			if (ch != sep)
+			if (ch != '/')
 				temp.push_back(ch);
 			else {
 				names.push_back(temp);
 				temp = "";
 			}
 		}
+		names.push_back(temp);
 		for (auto name : names) {
 			root = root->get_subordinate_ptr(name);
 			if (root == nullptr) break;
@@ -208,17 +189,17 @@ Cl_base *Cl_base::find_path(std::string path) {
 		return this->find_in_branch(path);
 	}
 	if (path[0] != '.' && path[0] != '/' && path[1] != '.' && path[1] != '/') {
-		char sep = '/';
 		std::string temp = "";
 		std::vector<std::string> names;
 		for (auto ch : path) {
-			if (ch != sep)
+			if (ch != '/')
 				temp.push_back(ch);
 			else {
 				names.push_back(temp);
 				temp = "";
 			}
 		}
+		names.push_back(temp);
 		for (auto name : names) {
 			current = current->get_subordinate_ptr(name);
 			if (current == nullptr) break;
