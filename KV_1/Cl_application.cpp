@@ -68,7 +68,8 @@ void Cl_application::build_tree_objects() {
 
 		head = find_path(head_path);
 		if (head == nullptr) {
-			print_branch();
+			std::cout << "Object tree\n";
+			this->print_branch();
 			std::cout << "\nThe head object " << head_path << " is not found";
 			exit(1);
 		}
@@ -116,32 +117,30 @@ int Cl_application::exec_app() {
 		temp = current->find_path(path);
 		if (command == "SET") {
 			if (temp == nullptr) {
-				std::cout << "The object was not found at the specified coordinate: " << path;
+				std::cout << "The object was not found at the specified coordinate: " << path << std::endl;
 			}
 			else {
 				current = temp;
-				std::cout << "Object is set: " << current->get_name();
+				std::cout << "Object is set: " << current->get_name() << std::endl;
 			}
 			continue;
 		}
 		if (command == "FIND") {
-			if (temp == nullptr) {
-				std::cout << path << "     Object is not found";
-			}
-			else {
-				std::cout << path << "     Object name: " << temp->get_name();
-			}
+			if (temp == nullptr) 
+				std::cout << path << "     Object is not found" << std::endl;
+			else 
+				std::cout << path << "     Object name: " << temp->get_name() << std::endl;
 			continue;
 		}
 		if (command == "MOVE") {
 			if (temp == nullptr) 
-				std::cout << path << "     Head object is not found";
+				std::cout << path << "     Head object is not found" << std::endl;
 			else if (temp->get_subordinate_ptr(current->get_name()) != nullptr) 
-				std::cout << path << "     Dubbing the names of subordinate objects";
+				std::cout << path << "     Dubbing the names of subordinate objects" << std::endl;
 			else if (!current->rebase(temp)) 
-				std::cout << path << "     Redefining the head object failed";
+				std::cout << path << "     Redefining the head object failed" << std::endl;
 			else 
-				std::cout << "New head object: " << temp->get_name();
+				std::cout << "New head object: " << temp->get_name() << std::endl;
 			continue;
 		}
 		if (command == "DELETE") {
@@ -153,10 +152,10 @@ int Cl_application::exec_app() {
 				abs_path = '/' + temp->get_name() + abs_path;
 				temp = temp->get_head_ptr();
 			}
-			std::cout << "The object " << abs_path << " has been deleted";
+			std::cout << "The object " << abs_path << " has been deleted" << std::endl;
 		}
 	}
-	std::cout << "Current object hierarchy tree";
+	std::cout << "Current object hierarchy tree\n";
 	this->print_branch();
 	return 0;
 }

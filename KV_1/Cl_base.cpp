@@ -71,10 +71,8 @@ void Cl_base::print_branch(int indent) {
 	for (int i = 0; i < indent; i++) {
 		prefix += "    ";
 	}
-	if (this->get_head_ptr() == nullptr) 
-		std::cout << prefix << this->get_name();
-	else 
-		std::cout << std::endl << prefix << this->get_name();
+	if (this->get_head_ptr() == nullptr) std::cout << prefix << this->get_name();
+	else std::cout << std::endl << prefix << this->get_name();
 	for (auto it : subordinate_objects) {
 		it->print_branch(indent + 1);
 	}
@@ -120,8 +118,6 @@ bool Cl_base::rebase(Cl_base *new_head)
 	Cl_base *temp = new_head, *head = this->get_head_ptr();
 	if (head == new_head) return true;
 	if (head == nullptr || new_head == nullptr) return false;
-	//ERROR: if sub not found, get_name() is called from nullptr
-	//if (new_head->get_subordinate_ptr(this->get_name()) == nullptr || new_head->get_subordinate_ptr(this->get_name())->get_name() == this->get_name()) //Если имя текущего объекта и одного из детей нового головного совпадают
 	if (new_head->get_subordinate_ptr(this->get_name()) != nullptr)
 		return false; 
 
@@ -188,7 +184,7 @@ Cl_base *Cl_base::find_path(std::string path) {
 		path.erase(path.begin());
 		return this->find_in_branch(path);
 	}
-	if (path[0] != '.' && path[0] != '/' && path[1] != '.' && path[1] != '/') {
+	if (path[0] != '.' && path[0] != '/') {
 		std::string temp = "";
 		std::vector<std::string> names;
 		for (auto ch : path) {
