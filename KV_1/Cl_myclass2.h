@@ -4,6 +4,8 @@
 class Cl_myclass2 : public Cl_base {
 public:
 	Cl_myclass2(Cl_base* head, std::string name);
+	void signal(std::string &message);
+	void handler(std::string &message);
 };
 
 #endif

@@ -205,6 +205,30 @@ Cl_base *Cl_base::find_path(std::string path) {
 	return nullptr;
 }
 
+void Cl_base::connect(TYPE_SIGNAL signal, Cl_base *target, TYPE_HANDLER handler)
+{
+	connection *value;
+
+	for (int i = 0; i < connections.size(); i++) {
+		if (connections[i]->p_signal == signal && 
+			connections[i]->target == target &&
+			connections[i]->p_handler == handler) {return;}
+	}
+}
+
+void Cl_base::disconnect(TYPE_SIGNAL signal, Cl_base *target, TYPE_HANDLER handler)
+{
+}
+
+void Cl_base::transmit(TYPE_SIGNAL signal, std::string &message)
+{
+}
+
+std::string Cl_base::get_abs_path()
+{
+	return std::string();
+}
+
 Cl_base::~Cl_base() {
 	for (int i = 0; i < subordinate_objects.size(); i++) {
 		delete subordinate_objects[i];

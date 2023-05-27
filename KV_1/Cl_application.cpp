@@ -105,26 +105,27 @@ void Cl_application::build_tree_objects() {
 }
 
 int Cl_application::exec_app() {
-	std::cout << "Object tree";
+	std::cout << "Object tree\n";
 	this->print_branch();
 	std::cout << std::endl;
 	std::string command, path;
 	Cl_base *current = this, *temp = nullptr;
 	while (cin >> command) {
 		if (command == "END") break;
-
+		
 		cin >> path;
 		temp = current->find_path(path);
+		
 		if (command == "SET") {
-			if (temp == nullptr) {
+			if (temp == nullptr) 
 				std::cout << "The object was not found at the specified coordinate: " << path << std::endl;
-			}
 			else {
 				current = temp;
 				std::cout << "Object is set: " << current->get_name() << std::endl;
 			}
 			continue;
 		}
+		
 		if (command == "FIND") {
 			if (temp == nullptr) 
 				std::cout << path << "     Object is not found" << std::endl;
@@ -132,6 +133,7 @@ int Cl_application::exec_app() {
 				std::cout << path << "     Object name: " << temp->get_name() << std::endl;
 			continue;
 		}
+		
 		if (command == "MOVE") {
 			if (temp == nullptr) 
 				std::cout << path << "     Head object is not found" << std::endl;
@@ -143,12 +145,13 @@ int Cl_application::exec_app() {
 				std::cout << "New head object: " << temp->get_name() << std::endl;
 			continue;
 		}
+		
 		if (command == "DELETE") {
 			if (current->get_subordinate_ptr(path) == nullptr) continue;
 			current->delete_sub_object(path);
 			std::string abs_path = '/' + path;
 			temp = current;
-			while (temp != nullptr) {
+			while (temp->get_head_ptr() != nullptr) {
 				abs_path = '/' + temp->get_name() + abs_path;
 				temp = temp->get_head_ptr();
 			}

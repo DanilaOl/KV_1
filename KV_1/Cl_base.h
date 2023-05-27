@@ -1,8 +1,13 @@
 #ifndef __CL_BASE__H
 #define __CL_BASE__H
+#define SIGNAL_D( signal_f ) ( TYPE_SIGNAL ) ( &signal_f )
+#define HANDLER_D( handler_f ) ( TYPE_HANDLER ) ( &handler_f )
 
 #include <string>
 #include <vector>
+
+typedef void (Cl_base::*TYPE_SIGNAL) (std::string &);
+typedef void (Cl_base::*TYPE_HANDLER) (std::string);
 
 class Cl_base {
 private:
@@ -10,6 +15,12 @@ private:
 	Cl_base *head;
 	int state = 0;
 	std::vector<Cl_base *> subordinate_objects;
+	struct connection {
+		TYPE_SIGNAL p_signal;
+		Cl_base *target;
+		TYPE_HANDLER p_handler;
+	};
+	std::vector<connection*> connections;
 public:
 	Cl_base(Cl_base* p_head_object, std::string s_object_name = "Base_object");
 	~Cl_base();
@@ -26,6 +37,11 @@ public:
 	bool rebase(Cl_base *new_head);
 	void delete_sub_object(std::string name);
 	Cl_base* find_path(std::string path);
+
+	void connect(TYPE_SIGNAL signal, Cl_base *target, TYPE_HANDLER handler);
+	void disconnect(TYPE_SIGNAL signal, Cl_base *target, TYPE_HANDLER handler);
+	void transmit(TYPE_SIGNAL signal, std::string &message);
+	std::string get_abs_path();
 };
 
 #endif
