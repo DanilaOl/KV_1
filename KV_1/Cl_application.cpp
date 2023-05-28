@@ -111,6 +111,7 @@ int Cl_application::exec_app()
 			}
 
 			head->transmit(get_signal_function(head), message);
+			continue;
 		}
 
 		if (command == "SET_CONNECT") {
@@ -129,6 +130,7 @@ int Cl_application::exec_app()
 			}
 
 			head->connect(get_signal_function(head), sub, get_handler_function(sub));
+			continue;
 		}
 
 		if (command == "DELETE_CONNECT") {
@@ -147,6 +149,7 @@ int Cl_application::exec_app()
 			}
 
 			head->disconnect(get_signal_function(head), sub, get_handler_function(sub));
+			continue;
 		}
 
 		if (command == "SET_CONDITION") {
