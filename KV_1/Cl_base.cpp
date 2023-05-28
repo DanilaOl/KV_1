@@ -113,6 +113,8 @@ void Cl_base::set_readiness(int state) {
 	}
 }
 
+int Cl_base::get_state() {return this->state;}
+
 bool Cl_base::rebase(Cl_base *new_head)
 {
 	Cl_base *temp = new_head, *head = this->get_head_ptr();
@@ -207,30 +209,79 @@ Cl_base *Cl_base::find_path(std::string path) {
 
 void Cl_base::connect(TYPE_SIGNAL signal, Cl_base *target, TYPE_HANDLER handler)
 {
-	connection *value;
-
-	for (int i = 0; i < connections.size(); i++) {
-		if (connections[i]->p_signal == signal && 
-			connections[i]->target == target &&
-			connections[i]->p_handler == handler) {return;}
+	for (auto conn : connections) {
+		if (conn->p_signal == signal && conn->target == target && conn->p_handler == handler)
+			return;
 	}
+
+	connections.push_back(new connection{signal, target, handler});
 }
 
 void Cl_base::disconnect(TYPE_SIGNAL signal, Cl_base *target, TYPE_HANDLER handler)
 {
+	for (auto conn = connections.begin(); conn != connections.end(); conn++) {
+		if ((*conn)->p_signal == signal && (*conn)->target == target && (*conn)->p_handler == handler) {
+			delete *conn;
+			connections.erase(conn);
+			return;
+		}
+	}
 }
 
 void Cl_base::transmit(TYPE_SIGNAL signal, std::string &message)
 {
+	if (this->get_state() == 0) 
+		return;
+
+	(this->*signal)(message);
+
+	TYPE_HANDLER handler;
+	Cl_base *target;
+
+	for (auto conn : connections) {
+		if (conn->p_signal == signal && conn->target->get_state() != 0) {
+			handler = conn->p_handler;
+			target = conn->target;
+
+			(target->*handler)(message);
+		}
+	}
 }
 
 std::string Cl_base::get_abs_path()
 {
-	return std::string();
+	if (this->get_head_ptr() == nullptr) return "/";
+
+	Cl_base *temp = this;
+	std::string path = "";
+
+	while (temp->get_head_ptr() != nullptr) {
+		path = '/' + temp->get_name() + path;
+		temp = temp->get_head_ptr();
+	}
+
+	return path;
+}
+
+void Cl_base::set_class_num(int num) {this->class_num = num;}
+
+int Cl_base::get_class_num() {return this->class_num;}
+
+void Cl_base::set_all_objects_state(int state)
+{
+	this->set_readiness(state);
+	for (auto it : subordinate_objects) {
+		it->set_all_objects_state(state);
+	}
 }
 
 Cl_base::~Cl_base() {
+	for (auto conn : connections) {
+		delete conn;
+	}
+	connections.clear();
 	for (int i = 0; i < subordinate_objects.size(); i++) {
 		delete subordinate_objects[i];
 	}
+	subordinate_objects.clear();
 }
