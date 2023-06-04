@@ -276,6 +276,32 @@ void Cl_base::set_all_objects_state(int state)
 }
 
 Cl_base::~Cl_base() {
+	Cl_base *root = this, *current;
+
+	while (root->get_head_ptr() != nullptr) {
+		root = root->get_head_ptr();
+	}
+
+	std::vector<Cl_base *> objects;
+	objects.push_back(root);
+
+	while (!objects.empty()) {
+		current = objects.back();
+		objects.pop_back();
+
+		if (current == nullptr) continue;
+
+		for (auto conn : current->connections) {
+			if (conn->target == this) {
+				current->disconnect(conn->p_signal, this, conn->p_handler);
+				break;
+			}
+		}
+
+		for (auto ob : current->subordinate_objects) {
+			objects.push_back(ob);
+		}
+	}
 	for (auto conn : connections) {
 		delete conn;
 	}

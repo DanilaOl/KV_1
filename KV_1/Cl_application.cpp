@@ -176,7 +176,7 @@ void Cl_application::signal(std::string &message)
 
 void Cl_application::handler(std::string &message)
 {
-	std::cout << std::endl << "Signal to " << this->get_abs_path() << "   Text: " << message;
+	std::cout << std::endl << "Signal to " << this->get_abs_path() << " Text:  " << message;
 }
 
 TYPE_SIGNAL Cl_application::get_signal_function(Cl_base *object)

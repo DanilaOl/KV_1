@@ -13,5 +13,5 @@ void Cl_myclass4::signal(std::string &message)
 
 void Cl_myclass4::handler(std::string &message)
 {
-	std::cout << std::endl << "Signal to " << this->get_abs_path() << "   Text: " << message;
+	std::cout << std::endl << "Signal to " << this->get_abs_path() << " Text:  " << message;
 }
